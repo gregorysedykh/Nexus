@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: nexus_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - nexus_db_data:/var/lib/postgresql/data
+
+  backend:
+    build: 
+      context: ./backend/Nexus.API
+    container_name: nexus_api
+    ports:
+      - "5298:8080"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Database=${DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
+    depends_on:
+      - db
+
+volumes:
+  nexus_db_data:
