@@ -104,6 +104,20 @@ namespace Nexus.API.Controllers
                 return NotFound();
             }
 
+            // Prevent duplicate links between the same user and word
+            var userWordExists = await _context.UserWords
+                .AnyAsync(uw => uw.UserId == userId && uw.WordId == addWordToUserDto.WordId);
+
+            if (userWordExists)
+            {
+                return Conflict(new ProblemDetails
+                {
+                    Title = "Word already assigned",
+                    Detail = "This word is already in the user's list.",
+                    Status = StatusCodes.Status409Conflict
+                });
+            }
+
             // Create new UserWord
             var userWord = new UserWord(userId, addWordToUserDto.WordId);
             _context.UserWords.Add(userWord);

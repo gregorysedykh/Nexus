@@ -1,0 +1,27 @@
+.landing {
+  padding: 2rem 1rem;
+}
+
+.landing__card {
+  width: 100%;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+.landing__card h1 {
+  margin: 0 0 0.75rem;
+}
+
+.landing__card p {
+  margin: 0 0 1rem;
+}
+
+.landing__form {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.landing__error {
+  margin-top: 0.75rem;
+  color: #b91c1c;
+}

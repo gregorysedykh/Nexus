@@ -36,7 +36,7 @@ namespace Nexus.API.Controllers
             await _context.SaveChangesAsync();
 
             var wordDto = _mapper.Map<WordDto>(word);
-            return CreatedAtAction(nameof(GetWords), new { id = word.Id }, wordDto);
+            return StatusCode(StatusCodes.Status201Created, wordDto);
         }
         
     }

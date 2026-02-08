@@ -1,3 +1,7 @@
-<div>
-    <h1>Welcome to Nexus</h1>
-</div>
+<section>
+  <h1>Welcome to your Nexus home</h1>
+  @if (userId()) {
+    <p>Signed in as user: {{ userId() }}</p>
+  }
+  <p>Your review dashboard will live here.</p>
+</section>
