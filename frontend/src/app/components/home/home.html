@@ -1,18 +1,68 @@
-<section>
-  <h1>Welcome to your Nexus home</h1>
-  <p>Signed in as user: {{ userId() }}</p>
-  <p-table [value]="userWords()">
-    <ng-template #header>
-      <tr>
-        <th>Term</th>
-        <th>Language Code</th>
-      </tr>
-    </ng-template>
-    <ng-template #body let-word>
-      <tr>
-        <td>{{ word.term }}</td>
-        <td>{{ word.languageCode }}</td>
-      </tr>
-    </ng-template>
-  </p-table>
+<section class="home-dashboard">
+  <div class="home-content">
+    <h1>Welcome to your Nexus home</h1>
+    <p>Signed in as user: {{ userId() }}</p>
+
+    <form class="add-word-form" #addWordForm="ngForm" (ngSubmit)="addWord(addWordForm)" novalidate>
+      <div class="add-word-fields">
+        <div class="field-group">
+          <label for="term">Term</label>
+          <input
+            pInputText
+            id="term"
+            name="term"
+            type="text"
+            [(ngModel)]="newWord.term"
+            placeholder="e.g. Park"
+            required
+          />
+        </div>
+
+        <div class="field-group">
+          <label for="languageCode">Language code</label>
+          <input
+            pInputText
+            id="languageCode"
+            name="languageCode"
+            type="text"
+            [(ngModel)]="newWord.languageCode"
+            placeholder="e.g. en"
+            maxlength="10"
+            required
+          />
+        </div>
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        label="Add Word"
+        [loading]="isSubmitting()"
+        [disabled]="isSubmitting() || !addWordForm.valid"
+      ></button>
+    </form>
+
+    @if (addWordMessage()) {
+      <p class="form-feedback form-feedback--success">{{ addWordMessage() }}</p>
+    }
+
+    @if (addWordError()) {
+      <p class="form-feedback form-feedback--error">{{ addWordError() }}</p>
+    }
+
+    <p-table class="home-words-table" [value]="userWords()" [tableStyle]="{ width: '100%' }">
+      <ng-template #header>
+        <tr>
+          <th>Term</th>
+          <th>Language Code</th>
+        </tr>
+      </ng-template>
+      <ng-template #body let-word>
+        <tr>
+          <td>{{ word.term }}</td>
+          <td>{{ word.languageCode }}</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
 </section>

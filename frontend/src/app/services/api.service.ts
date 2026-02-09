@@ -14,6 +14,11 @@ export interface WordDto {
   languageCode: string;
 }
 
+export interface CreateWordDto {
+  term: string;
+  languageCode: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -27,5 +32,13 @@ export class ApiService {
 
   getUserWords(userId: number): Observable<WordDto[]> {
     return this.http.get<WordDto[]>(`${this.baseUrl}/users/${userId}/words`);
+  }
+
+  createWord(createWordDto: CreateWordDto): Observable<WordDto> {
+    return this.http.post<WordDto>(`${this.baseUrl}/words`, createWordDto);
+  }
+
+  addWordToUser(userId: number, wordId: number): Observable<void> {
+    return this.http.post<void>(`${this.baseUrl}/users/${userId}/words`, { wordId });
   }
 }

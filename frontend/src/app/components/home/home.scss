@@ -1,0 +1,125 @@
+:host {
+  display: block;
+  --nexus-navy: #0c1f4d;
+  --table-surface: #ffffff;
+  --table-header-surface: #f2f6ff;
+  --table-border: color-mix(in srgb, var(--nexus-navy), transparent 78%);
+  --table-text: var(--nexus-navy);
+}
+
+:host-context(html.app-dark) {
+  --table-surface: var(--nexus-navy);
+  --table-header-surface: var(--nexus-navy);
+  --table-border: color-mix(in srgb, #ffffff, transparent 74%);
+  --table-text: #ffffff;
+}
+
+.home-dashboard {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.home-content {
+  width: min(900px, 100%);
+  margin: 0 auto;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.home-content h1 {
+  margin: 0 0 0.6rem;
+}
+
+.home-content p {
+  margin: 0 0 1.25rem;
+}
+
+.add-word-form {
+  width: min(680px, 100%);
+  margin: 0 auto 1rem;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.add-word-fields {
+  display: grid;
+  gap: 0.9rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.field-group {
+  display: grid;
+  gap: 0.4rem;
+  text-align: left;
+}
+
+.field-group label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.field-group input[pinputtext] {
+  width: 100%;
+}
+
+.add-word-form button[pbutton] {
+  justify-self: center;
+}
+
+.form-feedback {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+}
+
+.form-feedback--success {
+  color: #1f7a31;
+}
+
+.form-feedback--error {
+  color: #d43f3f;
+}
+
+:host ::ng-deep .home-words-table .p-datatable-table-container {
+  border: 1px solid var(--table-border);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+:host ::ng-deep .home-words-table .p-datatable-table {
+  background: var(--table-surface);
+}
+
+:host ::ng-deep .home-words-table .p-datatable-thead > tr > th {
+  background: var(--table-header-surface);
+  color: var(--table-text);
+  border-color: var(--table-border);
+  text-align: center;
+}
+
+:host ::ng-deep .home-words-table .p-datatable-tbody > tr > td {
+  background: var(--table-surface);
+  color: var(--table-text);
+  border-color: var(--table-border);
+}
+
+:host ::ng-deep .home-words-table .p-datatable-tbody > tr:hover > td {
+  background: color-mix(in srgb, var(--table-surface), #ffffff 8%);
+}
+
+@media (max-width: 640px) {
+  .home-dashboard {
+    align-items: flex-start;
+    padding-top: 5rem;
+  }
+
+  .home-content {
+    padding: 1rem;
+  }
+
+  .add-word-fields {
+    grid-template-columns: 1fr;
+  }
+}
