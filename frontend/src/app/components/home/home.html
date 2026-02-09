@@ -1,7 +1,18 @@
 <section>
   <h1>Welcome to your Nexus home</h1>
-  @if (userId()) {
-    <p>Signed in as user: {{ userId() }}</p>
-  }
-  <p>Your review dashboard will live here.</p>
+  <p>Signed in as user: {{ userId() }}</p>
+  <p-table [value]="userWords()">
+    <ng-template #header>
+      <tr>
+        <th>Term</th>
+        <th>Language Code</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-word>
+      <tr>
+        <td>{{ word.term }}</td>
+        <td>{{ word.languageCode }}</td>
+      </tr>
+    </ng-template>
+  </p-table>
 </section>

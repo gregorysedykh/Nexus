@@ -8,6 +8,12 @@ export interface User {
   email: string;
 }
 
+export interface WordDto {
+  id: number;
+  term: string;
+  languageCode: string;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -17,5 +23,9 @@ export class ApiService {
 
   getUser(id: number): Observable<User> {
     return this.http.get<User>(`${this.baseUrl}/users/${id}`);
+  }
+
+  getUserWords(userId: number): Observable<WordDto[]> {
+    return this.http.get<WordDto[]>(`${this.baseUrl}/users/${userId}/words`);
   }
 }
