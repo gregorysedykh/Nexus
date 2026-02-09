@@ -1,15 +1,19 @@
 .landing {
-  padding: 2rem 1rem;
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem;
 }
 
 .landing__card {
   width: 100%;
-  max-width: 32rem;
-  margin: 0 auto;
+  max-width: 30rem;
 }
 
 .landing__card h1 {
   margin: 0 0 0.75rem;
+  font-size: clamp(2rem, 7vw, 3rem);
+  line-height: 1.05;
 }
 
 .landing__card p {
@@ -21,7 +25,11 @@
   gap: 0.5rem;
 }
 
+.landing__form input[pinputtext] {
+  width: 100%;
+}
+
 .landing__error {
   margin-top: 0.75rem;
-  color: #b91c1c;
+  color: #d43f3f;
 }

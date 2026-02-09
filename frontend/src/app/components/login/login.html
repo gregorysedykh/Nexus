@@ -9,6 +9,7 @@
     <form class="landing__form" (ngSubmit)="login()" novalidate>
       <label for="userId">User ID</label>
       <input
+        pInputText
         id="userId"
         name="userId"
         type="text"
@@ -18,7 +19,7 @@
         autocomplete="username"
         inputmode="numeric"
       />
-      <button type="submit">Login</button>
+      <button pButton type="submit" label="Login"></button>
     </form>
 
     @if (errorMessage()) {
