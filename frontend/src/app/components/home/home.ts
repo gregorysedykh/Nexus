@@ -1,21 +1,23 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { FormsModule, NgForm } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { firstValueFrom } from 'rxjs';
 import { ApiService, CreateWordDto, WordDto } from '../../services/api.service';
+import { Flashcard } from '../flashcard/flashcard';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, ButtonModule, InputTextModule, TableModule],
+  imports: [FormsModule, ButtonModule, InputTextModule, TableModule, Flashcard],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
 export class Home implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   readonly userId = signal(
     this.route.snapshot.queryParamMap.get('userId') ?? sessionStorage.getItem('nexusUserId') ?? ''
   );
@@ -50,7 +52,7 @@ export class Home implements OnInit {
   addWord(form: NgForm): void {
     const userId = Number(this.userId());
     const term = this.newWord.term.trim();
-    const languageCode = this.newWord.languageCode.trim().toLowerCase();
+    // const languageCode = this.newWord.languageCode.trim().toLowerCase();
 
     if (!Number.isInteger(userId) || userId <= 0) {
       this.addWordMessage.set('');
@@ -58,17 +60,32 @@ export class Home implements OnInit {
       return;
     }
 
-    if (!term || !languageCode) {
-      this.addWordMessage.set('');
-      this.addWordError.set('Term and language code are required.');
-      return;
-    }
+    // if (!term || !languageCode) {
+    //   this.addWordMessage.set('');
+    //   this.addWordError.set('Term and language code are required.');
+    //   return;
+    // }
 
     this.isSubmitting.set(true);
     this.addWordMessage.set('');
     this.addWordError.set('');
+    
+    //! Set default language code to 'de' for now
+    // void this.addWordForUser(userId, term, languageCode, form);
+    void this.addWordForUser(userId, term, 'de', form);
+  }
 
-    void this.addWordForUser(userId, term, languageCode, form);
+  openReview(): void {
+    const userId = Number(this.userId());
+    if (!Number.isInteger(userId) || userId <= 0) {
+      this.addWordMessage.set('');
+      this.addWordError.set('A valid user ID is required.');
+      return;
+    }
+
+    void this.router.navigate(['/review'], {
+      queryParams: { userId },
+    });
   }
 
   private async addWordForUser(

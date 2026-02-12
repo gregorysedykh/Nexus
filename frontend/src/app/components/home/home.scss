@@ -47,7 +47,6 @@
 .add-word-fields {
   display: grid;
   gap: 0.9rem;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .field-group {
@@ -67,6 +66,10 @@
 
 .add-word-form button[pbutton] {
   justify-self: center;
+}
+
+.review-words-button {
+  margin-bottom: 1rem;
 }
 
 .form-feedback {

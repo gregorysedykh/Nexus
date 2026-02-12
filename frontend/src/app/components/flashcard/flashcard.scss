@@ -1,0 +1,29 @@
+:host {
+  display: block;
+  width: min(100%, var(--flashcard-max-width, 24rem));
+  margin: 0.75rem auto;
+}
+
+:host ::ng-deep .flashcard {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+:host ::ng-deep .flashcard .p-card-body,
+:host ::ng-deep .flashcard .p-card-content {
+  height: 100%;
+  padding: 0;
+}
+
+.flashcard__content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  font-weight: 700;
+}

@@ -31,10 +31,10 @@ namespace Nexus.API.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateWord(CreateWordDto createWordDto)
         {
-            var normalizedTerm = NormaliseTerm(createWordDto.Term);
-            var normalizedLanguageCode = NormaliseLanguageCode(createWordDto.LanguageCode);
+            var normalisedTerm = NormaliseTerm(createWordDto.Term);
+            var normalisedLanguageCode = NormaliseLanguageCode(createWordDto.LanguageCode);
 
-            if (string.IsNullOrWhiteSpace(normalizedTerm) || string.IsNullOrWhiteSpace(normalizedLanguageCode))
+            if (string.IsNullOrWhiteSpace(normalisedTerm) || string.IsNullOrWhiteSpace(normalisedLanguageCode))
             {
                 return BadRequest(new ProblemDetails
                 {
@@ -46,8 +46,8 @@ namespace Nexus.API.Controllers
 
             var existingWord = await _context.Words
                 .Where(w =>
-                    w.Term.Trim().ToLower() == normalizedTerm.ToLower() &&
-                    w.LanguageCode.Trim().ToLower() == normalizedLanguageCode)
+                    w.Term.Trim().ToLower() == normalisedTerm.ToLower() &&
+                    w.LanguageCode.Trim().ToLower() == normalisedLanguageCode)
                 .OrderBy(w => w.Id)
                 .FirstOrDefaultAsync();
 
@@ -58,8 +58,8 @@ namespace Nexus.API.Controllers
             }
 
             var word = _mapper.Map<Word>(createWordDto);
-            word.Term = normalizedTerm;
-            word.LanguageCode = normalizedLanguageCode;
+            word.Term = normalisedTerm;
+            word.LanguageCode = normalisedLanguageCode;
             _context.Words.Add(word);
             await _context.SaveChangesAsync();
 

@@ -17,20 +17,6 @@
             required
           />
         </div>
-
-        <div class="field-group">
-          <label for="languageCode">Language code</label>
-          <input
-            pInputText
-            id="languageCode"
-            name="languageCode"
-            type="text"
-            [(ngModel)]="newWord.languageCode"
-            placeholder="e.g. en"
-            maxlength="10"
-            required
-          />
-        </div>
       </div>
 
       <button
@@ -42,6 +28,15 @@
       ></button>
     </form>
 
+    <button
+      pButton
+      type="button"
+      label="Review words"
+      class="review-words-button"
+      [disabled]="!userWords().length"
+      (click)="openReview()"
+    ></button>
+
     @if (addWordMessage()) {
       <p class="form-feedback form-feedback--success">{{ addWordMessage() }}</p>
     }
@@ -50,19 +45,6 @@
       <p class="form-feedback form-feedback--error">{{ addWordError() }}</p>
     }
 
-    <p-table class="home-words-table" [value]="userWords()" [tableStyle]="{ width: '100%' }">
-      <ng-template #header>
-        <tr>
-          <th>Term</th>
-          <th>Language Code</th>
-        </tr>
-      </ng-template>
-      <ng-template #body let-word>
-        <tr>
-          <td>{{ word.term }}</td>
-          <td>{{ word.languageCode }}</td>
-        </tr>
-      </ng-template>
-    </p-table>
+
   </div>
 </section>
