@@ -2,6 +2,8 @@
   display: block;
   width: min(100%, var(--flashcard-max-width, 24rem));
   margin: 0.75rem auto;
+  --flashcard-surface: color-mix(in srgb, var(--page-background), var(--page-foreground) 9%);
+  --flashcard-border: color-mix(in srgb, var(--page-foreground), transparent 72%);
 }
 
 :host ::ng-deep .flashcard {
@@ -9,21 +11,90 @@
   aspect-ratio: 4 / 3;
   border-radius: 1rem;
   overflow: hidden;
+  background: var(--page-background);
 }
 
 :host ::ng-deep .flashcard .p-card-body,
 :host ::ng-deep .flashcard .p-card-content {
   height: 100%;
   padding: 0;
+  background: var(--page-background);
 }
 
-.flashcard__content {
+.flashcard__scene {
   height: 100%;
+  perspective: 1200px;
+  background: var(--page-background);
+}
+
+.flashcard__inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 260ms ease;
+  background: var(--page-background);
+}
+
+.flashcard__inner--flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard__face {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  border-radius: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--flashcard-border);
+  background: var(--flashcard-surface);
+}
+
+.flashcard__face--front {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 1rem;
+  gap: 1rem;
+  cursor: pointer;
+}
+
+.flashcard__face--back {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 1rem;
+  transform: rotateY(180deg);
+  cursor: pointer;
+}
+
+.flashcard__term {
+  margin: 0;
   text-align: center;
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 700;
+}
+
+.flashcard__hint {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.flashcard__placeholder {
+  margin: 0;
+  align-self: center;
+  text-align: center;
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.flashcard__actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.flashcard__button {
+  min-width: 7rem;
 }

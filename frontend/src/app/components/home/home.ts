@@ -7,11 +7,10 @@ import { InputTextModule } from 'primeng/inputtext';
 import { TableModule } from 'primeng/table';
 import { firstValueFrom } from 'rxjs';
 import { ApiService, CreateWordDto, WordDto } from '../../services/api.service';
-import { Flashcard } from '../flashcard/flashcard';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, ButtonModule, InputTextModule, TableModule, Flashcard],
+  imports: [FormsModule, ButtonModule, InputTextModule, TableModule],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })

@@ -23,29 +23,24 @@ export class Review implements OnInit {
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
   readonly currentWord = computed(() => this.words()[this.currentIndex()] ?? null);
-  readonly isFirstWord = computed(() => this.currentIndex() === 0);
-  readonly isLastWord = computed(
-    () => this.words().length === 0 || this.currentIndex() === this.words().length - 1
+  readonly isReviewComplete = computed(
+    () => this.words().length > 0 && this.currentIndex() >= this.words().length
   );
 
   ngOnInit(): void {
     void this.loadWords();
   }
 
-  previousWord(): void {
-    if (!this.isFirstWord()) {
-      this.currentIndex.update(index => index - 1);
-    }
-  }
-
-  nextWord(): void {
-    if (!this.isLastWord()) {
-      this.currentIndex.update(index => index + 1);
-    }
-  }
-
   restartReview(): void {
     this.currentIndex.set(0);
+  }
+
+  onGotIt(): void {
+    this.advanceWord();
+  }
+
+  onForgotIt(): void {
+    this.advanceWord();
   }
 
   goHome(): void {
@@ -73,5 +68,13 @@ export class Review implements OnInit {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  private advanceWord(): void {
+    if (!this.words().length || this.isReviewComplete()) {
+      return;
+    }
+
+    this.currentIndex.update(index => index + 1);
   }
 }
