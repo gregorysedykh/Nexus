@@ -1,0 +1,29 @@
+<section class="landing">
+  <div class="landing__card">
+    <h1>Nexus</h1>
+    <p>
+      Nexus helps you review words with spaced repetition. Enter your user ID to open your home
+      dashboard.
+    </p>
+
+    <form class="landing__form" (ngSubmit)="login()" novalidate>
+      <label for="userId">User ID</label>
+      <input
+        pInputText
+        id="userId"
+        name="userId"
+        type="text"
+        [(ngModel)]="userId"
+        placeholder="e.g. 1"
+        required
+        autocomplete="username"
+        inputmode="numeric"
+      />
+      <button pButton type="submit" label="Login"></button>
+    </form>
+
+    @if (errorMessage()) {
+      <p class="landing__error">{{ errorMessage() }}</p>
+    }
+  </div>
+</section>

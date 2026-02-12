@@ -1,1 +1,10 @@
+<header class="app-header">
+  <label for="theme-switch">Dark Mode</label>
+  <p-toggleswitch
+    inputId="theme-switch"
+    [ngModel]="theme() === 'dark'"
+    (ngModelChange)="setTheme($event ? 'dark' : 'light')"
+  />
+</header>
+
 <router-outlet />

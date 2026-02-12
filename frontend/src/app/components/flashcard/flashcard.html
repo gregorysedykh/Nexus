@@ -1,0 +1,32 @@
+<p-card class="flashcard">
+  <div class="flashcard__scene">
+    <div class="flashcard__inner" [class.flashcard__inner--flipped]="isFlipped">
+      <div class="flashcard__face flashcard__face--front" (click)="flipToBack()">
+        <p class="flashcard__term">{{ term }}</p>
+        <p class="flashcard__hint">Click card to reveal</p>
+      </div>
+
+      <div class="flashcard__face flashcard__face--back" (click)="flipToFront()">
+        <p class="flashcard__placeholder">Sample text</p>
+        <div class="flashcard__actions" (click)="$event.stopPropagation()">
+          <button
+            pButton
+            type="button"
+            label="Got it"
+            severity="success"
+            class="flashcard__button"
+            (click)="onGotIt()"
+          ></button>
+          <button
+            pButton
+            type="button"
+            label="Forgot it"
+            severity="danger"
+            class="flashcard__button"
+            (click)="onForgotIt()"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</p-card>

@@ -4,6 +4,7 @@ using AutoMapper;
 using Nexus.API.Data;
 using Nexus.API.Models;
 using Nexus.API.DTOs;
+using Npgsql;
 
 namespace Nexus.API.Controllers
 {
@@ -48,7 +49,17 @@ namespace Nexus.API.Controllers
                 .Where(uw => uw.UserId == id)
                 .Include(uw => uw.Word)
                 .ToListAsync();
-            var words = userWords.Select(uw => uw.Word).ToList();
+
+            var words = userWords
+                .Select(uw => uw.Word)
+                .GroupBy(w => new
+                {
+                    Term = NormaliseTerm(w.Term),
+                    LanguageCode = NormaliseLanguageCode(w.LanguageCode)
+                })
+                .Select(group => group.OrderBy(w => w.Id).First())
+                .ToList();
+
             var wordsDto = _mapper.Map<IEnumerable<WordDto>>(words);
             return Ok(wordsDto);
 
@@ -104,12 +115,91 @@ namespace Nexus.API.Controllers
                 return NotFound();
             }
 
+            var normalisedTerm = NormaliseTerm(word.Term);
+            var normalisedLanguageCode = NormaliseLanguageCode(word.LanguageCode);
+
+            // Resolve all equivalent word ids and pick one canonical id for storage.
+            var matchingWordIds = await _context.Words
+                .Where(w =>
+                    w.Term.Trim().ToLower() == normalisedTerm &&
+                    w.LanguageCode.Trim().ToLower() == normalisedLanguageCode)
+                .OrderBy(w => w.Id)
+                .Select(w => w.Id)
+                .ToListAsync();
+
+            if (matchingWordIds.Count == 0)
+            {
+                return NotFound();
+            }
+
+            var canonicalWordId = matchingWordIds[0];
+
+            // Prevent duplicates by meaning (term + language)
+            var userWordExists = await _context.UserWords
+                .AnyAsync(uw =>
+                    uw.UserId == userId &&
+                    matchingWordIds.Contains(uw.WordId));
+
+            if (userWordExists)
+            {
+                return DuplicateWordConflict();
+            }
+
             // Create new UserWord
-            var userWord = new UserWord(userId, addWordToUserDto.WordId);
+            var userWord = new UserWord(userId, canonicalWordId);
             _context.UserWords.Add(userWord);
-            await _context.SaveChangesAsync();
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex) when (IsUserWordUniqueViolation(ex))
+            {
+                return DuplicateWordConflict();
+            }
 
             return NoContent();
+        }
+
+        private IActionResult DuplicateWordConflict()
+        {
+            return Conflict(new ProblemDetails
+            {
+                Title = "Word already assigned",
+                Detail = "This word is already in the user's list.",
+                Status = StatusCodes.Status409Conflict
+            });
+        }
+
+        private static string NormaliseTerm(string term)
+        {
+            return term.Trim().ToLowerInvariant();
+        }
+
+        private static string NormaliseLanguageCode(string languageCode)
+        {
+            return languageCode.Trim().ToLowerInvariant();
+        }
+
+        private static bool IsUserWordUniqueViolation(DbUpdateException exception)
+        {
+            if (exception.InnerException is not PostgresException pgException)
+            {
+                return false;
+            }
+
+            if (pgException.SqlState != PostgresErrorCodes.UniqueViolation)
+            {
+                return false;
+            }
+
+            if (string.Equals(pgException.TableName, "UserWords", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return string.Equals(pgException.ConstraintName, "PK_UserWords", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(pgException.ConstraintName, "IX_UserWords_UserId_WordId", StringComparison.OrdinalIgnoreCase);
         }
 
     }

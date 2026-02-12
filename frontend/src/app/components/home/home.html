@@ -1,3 +1,50 @@
-<div>
-    <h1>Welcome to Nexus</h1>
-</div>
+<section class="home-dashboard">
+  <div class="home-content">
+    <h1>Welcome to your Nexus home</h1>
+    <p>Signed in as user: {{ userId() }}</p>
+
+    <form class="add-word-form" #addWordForm="ngForm" (ngSubmit)="addWord(addWordForm)" novalidate>
+      <div class="add-word-fields">
+        <div class="field-group">
+          <label for="term">Term</label>
+          <input
+            pInputText
+            id="term"
+            name="term"
+            type="text"
+            [(ngModel)]="newWord.term"
+            placeholder="e.g. Park"
+            required
+          />
+        </div>
+      </div>
+
+      <button
+        pButton
+        type="submit"
+        label="Add word"
+        [loading]="isSubmitting()"
+        [disabled]="isSubmitting() || !addWordForm.valid"
+      ></button>
+    </form>
+
+    <button
+      pButton
+      type="button"
+      label="Review words"
+      class="review-words-button"
+      [disabled]="!userWords().length"
+      (click)="openReview()"
+    ></button>
+
+    @if (addWordMessage()) {
+      <p class="form-feedback form-feedback--success">{{ addWordMessage() }}</p>
+    }
+
+    @if (addWordError()) {
+      <p class="form-feedback form-feedback--error">{{ addWordError() }}</p>
+    }
+
+
+  </div>
+</section>

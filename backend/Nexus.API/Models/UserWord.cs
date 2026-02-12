@@ -2,7 +2,6 @@ using Nexus.API.Models;
 
 public class UserWord
 {
-    public int Id { get; set; }
     public int UserId { get; set; }
     public int WordId { get; set; }
 

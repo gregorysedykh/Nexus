@@ -1,0 +1,26 @@
+<section class="review-page">
+  <div class="review-header">
+    <button type="button" class="back-home-button" (click)="goHome()">Back to home</button>
+  </div>
+
+  <div class="review-body">
+    @if (isLoading()) {
+      <p class="review-status">Loading words...</p>
+    } @else if (errorMessage()) {
+      <p class="review-status review-status--error">{{ errorMessage() }}</p>
+    } @else if (!words().length) {
+      <p class="review-status">No words available to review yet.</p>
+    } @else if (isReviewComplete()) {
+      <p class="review-status review-status--success">Review complete.</p>
+      <button pButton type="button" label="Restart review" severity="secondary" (click)="restartReview()"></button>
+    } @else if (currentWord(); as word) {
+      <p class="review-progress">{{ currentIndex() + 1 }} / {{ words().length }}</p>
+      <app-flashcard
+        class="review-flashcard"
+        [term]="word.term"
+        (gotIt)="onGotIt()"
+        (forgotIt)="onForgotIt()"
+      ></app-flashcard>
+    }
+  </div>
+</section>

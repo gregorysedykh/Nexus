@@ -1,0 +1,19 @@
+.app-header {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  background: var(--page-background);
+  color: var(--page-foreground);
+}
+
+.app-header label {
+  font-size: 0.9rem;
+  font-weight: 600;
+}

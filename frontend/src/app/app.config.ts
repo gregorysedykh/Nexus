@@ -2,9 +2,9 @@ import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessC
 import { provideHttpClient } from '@angular/common/http';
 import { provideRouter } from '@angular/router';
 import { providePrimeNG } from 'primeng/config';
-import Aura from '@primeuix/themes/aura';
 
 import { routes } from './app.routes';
+import { NexusTheme } from './theme/nexus-theme';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,9 +13,12 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     providePrimeNG({
-            theme: {
-                preset: Aura
-            }
-        })
-  ]
+      theme: {
+        preset: NexusTheme,
+        options: {
+          darkModeSelector: '.app-dark',
+        },
+      },
+    }),
+  ],
 };

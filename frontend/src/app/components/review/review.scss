@@ -1,0 +1,75 @@
+:host {
+  display: block;
+}
+
+.review-page {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  padding: 1.25rem;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--page-foreground), transparent 92%), transparent 55%),
+    var(--page-background);
+}
+
+.review-header {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.back-home-button {
+  appearance: none;
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 21;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  color: inherit;
+  background: color-mix(in srgb, currentColor, transparent 86%);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-body {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+  width: min(72rem, 100%);
+  margin: 0 auto;
+  text-align: center;
+}
+
+.review-progress {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.review-status {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.review-status--error {
+  color: #d43f3f;
+}
+
+.review-status--success {
+  color: #1f7a31;
+}
+
+.review-flashcard {
+  --flashcard-max-width: 44rem;
+}
+
+@media (max-width: 640px) {
+  .review-page {
+    padding: 1rem;
+  }
+}
