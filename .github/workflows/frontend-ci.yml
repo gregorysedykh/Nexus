@@ -83,42 +83,7 @@ jobs:
         run: npm run test:integration
         working-directory: frontend
 
-  e2e-tests:
-    runs-on: ubuntu-latest
-    needs: integration-tests
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '24.x'
-          cache: npm
-          cache-dependency-path: frontend/package-lock.json
-
-      - name: Install dependencies
-        run: npm ci
-        working-directory: frontend
-
-      - name: Install Playwright Chromium browser
-        run: npx playwright install --with-deps chromium
-        working-directory: frontend
-
-      - name: Run e2e tests (Playwright)
-        run: npx playwright test --config=playwright.config.ts
-        working-directory: frontend
-
-      - name: Upload Playwright report on failure
-        if: failure()
-        uses: actions/upload-artifact@v6
-        with:
-          name: playwright-report
-          path: frontend/playwright-report
-          if-no-files-found: ignore
-
-  e2e-fullstack:
+  e2e:
     runs-on: ubuntu-latest
     needs: integration-tests
     timeout-minutes: 45
@@ -150,29 +115,44 @@ jobs:
       - name: Start full stack (db + backend + frontend)
         run: docker compose -f docker-compose.yml -f .github/compose.fullstack.yml up -d --build
 
-      - name: Wait for API through frontend proxy
+      - name: Wait for frontend and API
         run: |
           for i in $(seq 1 60); do
-            if curl -fsS http://127.0.0.1:4200/api/users/1 >/dev/null; then
+            frontend_ok=0
+            api_direct_ok=0
+            api_proxy_ok=0
+
+            curl -fsS http://127.0.0.1:4200 >/dev/null && frontend_ok=1 || true
+            curl -fsS http://127.0.0.1:5298/api/users/1 >/dev/null && api_direct_ok=1 || true
+            curl -fsS http://127.0.0.1:4200/api/users/1 >/dev/null && api_proxy_ok=1 || true
+
+            if [ "$frontend_ok" -eq 1 ] && [ "$api_direct_ok" -eq 1 ] && [ "$api_proxy_ok" -eq 1 ]; then
               echo "Full stack is ready."
               exit 0
             fi
+
+            if [ $((i % 10)) -eq 0 ]; then
+              echo "Still waiting (attempt $i/60)..."
+              docker compose -f docker-compose.yml -f .github/compose.fullstack.yml ps
+            fi
             sleep 5
           done
+
           echo "Full stack did not become ready in time."
-          docker compose -f docker-compose.yml -f .github/compose.fullstack.yml logs
+          docker compose -f docker-compose.yml -f .github/compose.fullstack.yml ps
+          docker compose -f docker-compose.yml -f .github/compose.fullstack.yml logs --no-color
           exit 1
 
-      - name: Run fullstack e2e tests (Playwright)
-        run: npx playwright test --config=playwright.fullstack.config.ts
+      - name: Run e2e tests (Playwright)
+        run: npx playwright test --config=playwright.config.ts
         working-directory: frontend
 
-      - name: Upload fullstack Playwright report on failure
+      - name: Upload Playwright report on failure
         if: failure()
         uses: actions/upload-artifact@v6
         with:
-          name: playwright-fullstack-report
-          path: frontend/playwright-report-fullstack
+          name: playwright-report
+          path: frontend/playwright-report
           if-no-files-found: ignore
 
       - name: Stop full stack
