@@ -90,3 +90,11 @@ Thumbs.db
 
 frontend/.vscode/
 frontend/.angular/
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/
+frontend/playwright-report-fullstack/
+frontend/blob-report/
+frontend/playwright/.cache/
+frontend/playwright/.auth/
