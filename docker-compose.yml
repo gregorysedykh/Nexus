@@ -1,7 +1,6 @@
 services:
   db:
     image: postgres:17-alpine
-    container_name: nexus_db
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -10,22 +9,27 @@ services:
       - "5432:5432"
     volumes:
       - nexus_db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
 
   backend:
     build: 
       context: ./backend/Nexus.API
-    container_name: nexus_api
     ports:
       - "5298:8080"
     environment:
       - ConnectionStrings__DefaultConnection=Host=db;Database=${DB_NAME};Username=${POSTGRES_USER};Password=${POSTGRES_PASSWORD}
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+    restart: on-failure
 
   frontend:
     build:
       context: ./frontend
-    container_name: nexus_frontend
     ports:
       - "4200:80"
     depends_on:

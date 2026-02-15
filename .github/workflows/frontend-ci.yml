@@ -92,6 +92,7 @@ jobs:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       DB_NAME: nexus
+      COMPOSE_PROJECT_NAME: nexus_e2e
 
     steps:
       - name: Checkout
